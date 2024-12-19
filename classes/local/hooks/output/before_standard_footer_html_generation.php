@@ -33,17 +33,24 @@ class before_standard_footer_html_generation {
      */
     public static function callback(\core\hook\output\before_standard_footer_html_generation $hook): void {
         global $DB, $OUTPUT;
+        xdebug_break();
 
         if (! get_config('tool_quizui', 'enabled')) {
-            return;
+          //  return;
         }
-        if (!self::in_uicohort()) {
-            return;
-        }
+        //if (!self::in_uicohort()) {
+            //    return;
+        //}
 
+        $content = '';
+        if ($pagetype !== "mod-quiz-mod") {
+          $content =   self::quiz_page_edit();
+        }
+        $hook->add_html($content);
+        return ;
         global $PAGE;
         $pagetype = $PAGE->pagetype;
-        if ($pagetype !== "question-type-stack") {
+        if ($pagetype !== "mod-quiz-mod") {
             return;
         }
         $showall = optional_param('showall', '', PARAM_TEXT);
@@ -95,15 +102,73 @@ class before_standard_footer_html_generation {
         $hook->add_html($content);
 
     }
+    public static function quiz_page_edit() {
+        $elementstohide = get_config('tool_quizui', 'elementstohide');
+        $content .= self::hide_elements($elementstohide);
+        return $content;
+    }
+    /**
+    * Create the javascript event code and insert the toggle element
+    * html.
+    *
+    * @param string $content
+    * @param string $elementid
+    * @param [type] $checkboxlabel
+    * @return string
+    */
+   public static function toggle_checkbox(string $elementid, string $checkboxlabel): string {
+       xdebug_break();
+       $showall = optional_param('showall', '', PARAM_TEXT);
+       if ($showall == "true") {
+           $checkedstatus = "checked=true";
+           $checkboxlabel = get_string('showall', 'tool_stackui');
+      }
+
+       $content = "
+       <div>
+           <div id='cbx_$elementid' class='custom-control custom-switch'>
+           <input type='checkbox' $checkedstatus name='xsetmode' class='custom-control-input' data-initial-value='on'>
+           <span class='custom-control-label'>$checkboxlabel</span>
+       </div>
+
+       <script>
+           debugger;
+           var showall = '$showall';
+           const header = document.getElementById('$elementid');
+
+           var cbx = 'cbx_'+$elementid;
+           cbx = document.getElementById('cbx_$elementid');
+           cbx.addEventListener('click', function(event) {
+               const url = new URL(window.location.href);
+               if(showall == 'true') {
+                   url.searchParams.delete('showall');
+               } else {
+                   url.searchParams.append('showall', 'true');
+               }
+               window.location.href = url.href;
+               event.preventDefault();
+           });
+
+           function insertAfter(referenceNode, newNode) {
+               referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+           }
+
+          insertAfter(header, cbx);
+       </script>";
+       if ($showall == '') {
+           $content .= self::hide_elements();
+       }
+       return $content;
+   }
+
     /**
      * Hide elements with javascript
      *
      * @return string
      */
-    public static function hide_elements(): string {
+    public static function hide_elements($elementstohide): string {
         global $DB, $OUTPUT;
-        $config = get_config('tool_quizui', 'elementstohide');
-        $array = explode(',', $config);
+        $array = explode(',', $elementstohide);
         $trimmedarray = array_map('trim', $array);
 
         $tohide = array_filter($trimmedarray, function($value) {
@@ -118,16 +183,6 @@ class before_standard_footer_html_generation {
         }
 
         $content .= '</style>';
-        // The Fix dollars elements are in a different format to other elements.
-        if (in_array('id_fixdollars', $tohide)) {
-            $content .= "<script>
-            const element = document.getElementById('id_fixdollars');
-            const ancestor = element.closest('.mb-3');
-            ancestor.style.display = 'none';
-            </script>";
-        }
-        $msg = 'Some elements are hidden for simplification based on you being in cohort '.get_config('tool_quizui', 'uicohort');
-        \core\notification::add($msg, \core\notification::WARNING);
         return $content;
     }
 

@@ -26,4 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Quiz UI Tweaks';
+$string['settings:elementstohide'] = 'Settings:elementstohide';
+$string['settings:elementstohide_text'] = 'Settings:elementstohide text';
+$string['settings:enabled'] = 'Enabled';
+$string['settings:enabled_text'] = 'Settings:enabled text';
+$string['settings:hidecorrecttag'] = 'Hide correct answers';
+$string['settings:hidecorrecttag_text'] = 'Hide correct answers in quiz review text';
 $string['settings:quizuisettings'] = 'Quiz UI Settings';
+$string['settings:simplifytag'] = 'Simplify tag';
+$string['settings:simplifytag_desc'] = 'Settings:simplifytag desc';

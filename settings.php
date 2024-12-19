@@ -24,8 +24,31 @@
 defined('MOODLE_INTERNAL') || die();
 
 if (is_siteadmin()) {
-xdebug_break();
     $settingspage = new admin_settingpage('quizuisettings' , get_string('settings:quizuisettings', 'tool_quizui'));
+    $settingspage->add(new admin_setting_configcheckbox('tool_stackui/enabled',
+         get_string('settings:enabled', 'tool_quizui'),
+         get_string('settings:enabled_text', 'tool_quizui') , 0));
+
+    $settingspage->add(new admin_setting_configtext('tool_stackui/hidecorrecttag',
+         get_string('settings:hidecorrecttag', 'tool_quizui'),
+         get_string('settings:hidecorrecttag_text', 'tool_quizui') , 0));
+
+    $settingspage->add(new admin_setting_configtext(
+        'tool_quizui/simplify',
+        get_string('settings:simplifytag', 'tool_quizui'),
+        get_string('settings:simplifytag_desc', 'tool_quizui'),
+        'quiz-simplify',  // default value
+        PARAM_TEXT
+    ));
+
+    $formelements = 'id_seb,id_tagshdr,id_layouthdr,id_security,id_modstandardelshdr,
+                    id_competenciessection,id_availabilityconditionsheader,id_display,id_activitycompletionheader';
+
+
+     $settingspage->add(new admin_setting_configtextarea('tool_quizui/elementstohide',
+         get_string('settings:elementstohide', 'tool_quizui'),
+         get_string('settings:elementstohide_text', 'tool_quizui') ,
+          $formelements));
 
     $ADMIN->add('tools', $settingspage);
 }
