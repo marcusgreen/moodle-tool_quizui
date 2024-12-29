@@ -33,7 +33,6 @@ class before_standard_footer_html_generation {
      */
     public static function callback(\core\hook\output\before_standard_footer_html_generation $hook): void {
         global $DB, $OUTPUT;
-        xdebug_break();
 
         if (! get_config('tool_quizui', 'enabled')) {
           //  return;
@@ -117,7 +116,6 @@ class before_standard_footer_html_generation {
     * @return string
     */
    public static function toggle_checkbox(string $elementid, string $checkboxlabel): string {
-       xdebug_break();
        $showall = optional_param('showall', '', PARAM_TEXT);
        if ($showall == "true") {
            $checkedstatus = "checked=true";
