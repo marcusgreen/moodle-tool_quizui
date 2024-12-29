@@ -103,6 +103,7 @@ class before_standard_footer_html_generation {
     }
     public static function quiz_page_edit() {
         $elementstohide = get_config('tool_quizui', 'elementstohide');
+        $content = '';
         $content .= self::hide_elements($elementstohide);
         return $content;
     }
