@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'tool_quizui';
 $plugin->release      = '1.0';
-$plugin->version      = 2024120901;
+$plugin->version      = 2024120902;
 $plugin->requires     = 2024100700.04;
 $plugin->supported    = [403, 405];
 $plugin->maturity     = MATURITY_STABLE;

@@ -32,25 +32,23 @@ class before_standard_footer_html_generation {
      * @package tool_quizui
      */
     public static function callback(\core\hook\output\before_standard_footer_html_generation $hook): void {
-        global $DB, $OUTPUT;
-
+        global $DB, $OUTPUT, $PAGE;
+        $pagetype = $PAGE->pagetype;
         if (! get_config('tool_quizui', 'enabled')) {
-          //  return;
+           return;
         }
-        //if (!self::in_uicohort()) {
+        if (!self::in_uicohort()) {
             //    return;
-        //}
-
+        }
         $content = '';
         if ($pagetype !== "mod-quiz-mod") {
-          $content =   self::quiz_page_edit();
+           $content =   self::quiz_page_edit();
         }
+
         $hook->add_html($content);
-        return ;
-        global $PAGE;
         $pagetype = $PAGE->pagetype;
-        if ($pagetype !== "mod-quiz-mod") {
-            return;
+        if ($pagetype !== "mod-quiz-attempt") {
+            $content =   self::quiz_attempt();
         }
         $showall = optional_param('showall', '', PARAM_TEXT);
         $checkedstatus = "";
@@ -100,6 +98,32 @@ class before_standard_footer_html_generation {
         }
         $hook->add_html($content);
 
+    }
+
+    public static function quiz_attempt() {
+        xdebug_break();
+        $quiztags = self::get_quiztags();
+
+    }
+
+      /**
+     * Get any tags set up for this plugin instance
+     *
+     * @param mixed $cmid
+     * @return mixed
+     */
+    private static function get_quiztags() {
+        global $DB;
+        $sql = "SELECT name as tagname
+                FROM {tag_instance} ti
+                JOIN {tag} tag
+                    ON ti.tagid=tag.id
+                AND ti.itemtype='course_modules'
+                AND ti.itemid = :cmid";
+
+        $cmid = optional_param('cmid', null, PARAM_INT);
+        $quiztags = $DB->get_records_sql($sql, ['cmid' => $cmid]);
+        return $quiztags;
     }
     public static function quiz_page_edit() {
         $elementstohide = get_config('tool_quizui', 'elementstohide');

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Hook callbacks for Stack question UI changes
+ * Hook callbacks for Quiz UI changes
  *
  * @package    tool_quizui
- * @copyright  2024 Marcus Green
+ * @copyright  2025 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,6 +27,11 @@ $callbacks = [
     [
         'hook' => core\hook\output\before_standard_footer_html_generation::class,
         'callback' => 'tool_quizui\local\hooks\output\before_standard_footer_html_generation::callback',
+        'priority' => 0,
+    ],
+    [
+        'hook' => core\hook\output\before_standard_head_html_generation::class,
+        'callback' => 'tool_quizui\local\hooks\output\before_standard_head_html_generation::callback',
         'priority' => 0,
     ],
 ];
